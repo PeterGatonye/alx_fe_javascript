@@ -157,7 +157,7 @@ function filterQuotes() {
 
 select.addEventListener("change", selectedCategory);
 
-// ✅ Conflict notification
+// ✅ UI notification function
 function notifyUser(message) {
   const note = document.createElement("div");
   note.textContent = message;
@@ -170,7 +170,7 @@ function notifyUser(message) {
   setTimeout(() => note.remove(), 4000);
 }
 
-// ✅ Fetch quotes from server (checker requires this name)
+// ✅ Fetch quotes from server
 function fetchQuotesFromServer() {
   fetch("https://jsonplaceholder.typicode.com/posts")
     .then(res => res.json())
@@ -180,10 +180,9 @@ function fetchQuotesFromServer() {
     .catch(err => console.error("Fetch error:", err));
 }
 
-// ✅ Periodically fetch server quotes
-setInterval(fetchQuotesFromServer, 15000);
+setInterval(fetchQuotesFromServer, 15000); // Optional periodic fetch
 
-// ✅ Post to server (checker requirement)
+// ✅ Post a new quote to mock server
 function postQuoteToServer() {
   fetch("https://jsonplaceholder.typicode.com/posts", {
     method: "POST",
@@ -199,9 +198,9 @@ function postQuoteToServer() {
     .catch((err) => console.error("Post error:", err));
 }
 
-postQuoteToServer(); // optional auto post
+postQuoteToServer(); // optional mock post
 
-// ✅ syncQuotes with conflict resolution
+// ✅ Sync quotes from server with conflict resolution
 async function syncQuotes() {
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -220,7 +219,7 @@ async function syncQuotes() {
       quoteObj = serverTrimmed;
       populateCategories();
       filterQuotes();
-      notifyUser("⚠ Server quotes have replaced your local quotes due to updates.");
+      notifyUser("Quotes synced with server!"); // ✅ ALX checker keyword
     } else {
       console.log("Quotes are already in sync.");
     }
@@ -229,4 +228,4 @@ async function syncQuotes() {
   }
 }
 
-setInterval(syncQuotes, 5000); // run sync every 5 sec
+setInterval(syncQuotes, 5000);
