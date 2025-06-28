@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-  let savedCategory = localStorage.getItem("lastSelectedCategory");
+  const savedCategory = localStorage.getItem("lastSelectedCategory");
   if (savedCategory) {
     select.value = savedCategory;
   }
 
-  // Show last viewed quote from sessionStorage
   const lastQuote = sessionStorage.getItem("lastViewedQuote");
   if (lastQuote) {
     quoteDisplayContainer.innerHTML = `<p><em>Last viewed:</em> ${lastQuote}</p>`;
@@ -17,11 +16,9 @@ const showQuoteBtn = document.getElementById("newQuote");
 const quoteDisplayContainer = document.getElementById("quoteDisplay");
 const select = document.getElementById("categoryFilter");
 
-// Load or initialize quotes array
 let quoteObj = JSON.parse(localStorage.getItem("quoteItem")) || [];
-if (!Array.isArray(quoteObj)) {
-  quoteObj = [];
-}
+if (!Array.isArray(quoteObj)) quoteObj = [];
+
 populateCategories();
 
 // Display a random quote
@@ -41,11 +38,9 @@ function createAddQuoteForm() {
   newItem.id = "quote-paragraph";
   quoteDisplayContainer.appendChild(newItem);
 
-  // Save to sessionStorage
   sessionStorage.setItem("lastViewedQuote", `${showRandomQuote.text} - ${showRandomQuote.category}`);
 }
 
-// Clear the random quote after 2 seconds
 function clearRandomQuote() {
   const quotePara = document.getElementById("quote-paragraph");
   if (quotePara) quotePara.remove();
@@ -148,8 +143,10 @@ function populateCategories() {
 }
 
 function filterQuotes() {
-  quoteDisplayContainer.innerHTML = "";
   const selectedOption = select.value;
+  localStorage.setItem("lastSelectedCategory", selectedOption);
+
+  quoteDisplayContainer.innerHTML = "";
 
   const filtered = selectedOption === "all"
     ? quoteObj
@@ -162,23 +159,15 @@ function filterQuotes() {
   });
 }
 
-function selectedCategory() {
-  localStorage.setItem("lastSelectedCategory", select.value);
-  filterQuotes();
-}
-
-select.addEventListener("change", selectedCategory);
-
-// Simulate server fetch
+// Simulated server fetch
 async function fetchQuotesFromServer() {
   const response = await fetch("https://jsonplaceholder.typicode.com/posts");
   const data = await response.json();
   console.log("Fetched posts from server:", data.slice(0, 5));
 }
-
 setInterval(fetchQuotesFromServer, 5000);
 
-// Sync local quotes with mock server data
+// Sync quotes with mock server
 async function syncQuotes() {
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -204,5 +193,4 @@ async function syncQuotes() {
     console.error("Error syncing quotes:", error);
   }
 }
-
 setInterval(syncQuotes, 5000);
